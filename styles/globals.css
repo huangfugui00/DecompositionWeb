@@ -1,0 +1,37 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+.my-container{
+    width:90vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.my-container-big{
+    width:90vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+@media  (min-width: 1280px ) {
+    .my-container{
+        width:1124px;
+    }
+}
+
+@media  (max-width: 500px ) {
+    .my-container{
+        width:100vw;
+        
+    }
+}
+
+@media  (max-width: 768px ) {
+    .my-container-big{
+        width:95vw;
+    }
+}
