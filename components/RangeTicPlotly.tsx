@@ -12,7 +12,7 @@ type RangeTicPlotlyProp={
 const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
     const {left,right,times,tics} = props
     return (
-            <div className="flex border h-72" id="myTicDiv" >
+            <div className=" h-64" id="myTicDiv" >
              <Plot        
                 config={
                     {

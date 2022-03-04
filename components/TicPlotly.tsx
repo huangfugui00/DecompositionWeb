@@ -26,7 +26,7 @@ const TicPlotly:React.FC<TicPlotlyProp> = (props) => {
     const maxY = Math.max(...tics)
 
     return (
-        <div className="h-72">
+        <div className="h-64">
              <Plot
                 onRelayout={e=>handleZoomEvent(e)}
                 config={

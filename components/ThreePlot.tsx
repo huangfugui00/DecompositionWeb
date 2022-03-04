@@ -11,13 +11,18 @@ type ThreePlotProp={
 }
 const ThreePlot:React.FC<ThreePlotProp> = (props) => {
     const {alignPeaks,times,mzArr,left,right} = props
-    console.log(left)
-    console.log(right)
     let displayTimes = times
     let displayZ = alignPeaks
     if(left&&right){
         displayTimes = times.slice(left,right)
         displayZ = alignPeaks.slice(left,right)
+    }
+    if(displayTimes.length>500){
+        return(
+            <div className="flex items-center justify-center">
+                <p>所选范围太大</p>
+            </div>
+        )
     }
     return (
         <Plot 
@@ -42,8 +47,6 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
         config={
             {
                 responsive:true
-                
-            
             }
             
         }  

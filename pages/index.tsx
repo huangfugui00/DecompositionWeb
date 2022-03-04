@@ -1,7 +1,6 @@
 import {useState,useEffect} from 'react'
 import Head from 'next/head'
 import Header from '@/components/Header'
-import Tic from '@/components/Tic'
 import {ticType,cdfType,rangeType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import ThreePlot from '@/components/ThreePlot'
@@ -9,13 +8,8 @@ import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
 
 export default function Home() {
-  // const [ticData,setTicData] = useState<ticType[]>()
-  
   const [cdfData,setCdfData] =  useState<cdfType>()
   const [range,setRange] = useState<rangeType>()
-  
-
-
 
   useEffect(() => {
     const fetchCdf = async()=>{
@@ -47,9 +41,6 @@ export default function Home() {
     return<></>
   }
  
-  
- 
-
 
   return (
     <div >
@@ -60,7 +51,7 @@ export default function Home() {
       {/* Header  */}
       <main className="p-4">
         <Header/>
-        <div className="mt-4   border p-4 border-t-blue-500 border-t-4">
+        <div className="mt-4  p-4 border-t-blue-500 border-t-4">
           <div className="flex mx-auto">
           <p className="text-primary-color font-bold text-lg mx-auto">安捷伦六组分</p>
           </div>
@@ -70,12 +61,9 @@ export default function Home() {
           }
           {cdfData&&<RangeTicPlotly times={cdfData.scanTimes} tics={cdfData.tics} left={range?.left} right={range?.right}/>}
           </div>
-          <div className="grid grid-cols-2   gap-8 mt-4">
+          <div className="grid grid-cols-2   gap-8 mt-4 ">
             <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
-          </div>
-            {/* {ticData&&<Tic ticData={ticData} left={left} right={right} setLeft={setLeft} setRight={setRight}/>}
-            {ticData&&<RangeTic ticData={ticData} left={left} right={right} />} */}
-         
+          </div>  
         </div>
       </main>
 
