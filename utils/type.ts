@@ -9,6 +9,12 @@ export type ticType={
     intensity:number,
 }
 
+export type rangeType={
+    left:number,
+    right:number,
+    leftIdx:number,
+    rightIdx:number,
+}
 
 export type cdfType={
     mzLen:number,

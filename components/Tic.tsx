@@ -12,7 +12,6 @@ import {
   } from 'recharts';
 import {ticType} from 'utils/type'
 import dynamic from 'next/dynamic'
-const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 type ticProp={
   ticData:ticType[]
@@ -52,8 +51,7 @@ const Tic:React.FC<ticProp> = (props) => {
     const {ticData,left,right,setLeft,setRight} = props
     const [refAreaLeft,setRefAreaLeft]  = useState<string|undefined>('')
     const [refAreaRight,setRefAreaRight]  = useState<string|undefined>('')
-    console.log('ticData')
-    console.log(ticData)
+
     const zoom = ()=>{  
       if (refAreaLeft === refAreaRight || refAreaRight === '') {
         setRefAreaLeft('')
@@ -90,16 +88,16 @@ const Tic:React.FC<ticProp> = (props) => {
 
           
          <ResponsiveContainer width="100%" height="100%">
-            <LineChart width={20} height={100} data={initialData}
+            <LineChart width={20} height={100} data={ticData}
             onMouseDown={(e) => onMouseDown(e)}
             onMouseMove={(e) => refAreaLeft && setRefAreaRight(e.activeLabel )}
             onMouseUp={()=>zoom()}
             >
                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" allowDataOverflow   type="number"/>
+                <XAxis dataKey="time" allowDataOverflow   type="number"/>
                 <YAxis />
                 <Tooltip />   
-                <Line type="monotone" dataKey="cost" stroke="#8884d8" activeDot={false}/>
+                <Line type="monotone" dataKey="intensity" stroke="#8884d8" activeDot={false}/>
                 {refAreaLeft && refAreaRight ? (
               <ReferenceArea  x1={refAreaLeft} x2={refAreaRight} strokeOpacity={0.3} />
             ) : null}
