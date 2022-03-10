@@ -35,7 +35,7 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
             }
         ]}
         layout={{
-            height:500,
+            height:450,
             margin: {
                 l: 5,
                 r: 5,

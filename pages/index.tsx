@@ -9,6 +9,7 @@ import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
 import ModalLoading from '@/components/ModalLoading'
 import {ToastAlert,toastAlert} from '@/components/ToastAlert'
+import ComponentMass from '@/components/ComponentMass'
 
 export default function Home() {
   const [cdfData,setCdfData] =  useState<cdfType>()
@@ -69,15 +70,14 @@ export default function Home() {
         setLoading(true)
         if(jsonData){
           const result =  await deompositionSer.decompostion({data:jsonData})
-          if(result.status){
+          if(result&&result.status){
+            console.log(result.data)
             setEstList(result.data)
-
           }
           else{
             toastAlert(result.statusText)
           }
         }
-        
       }
       catch(err:any){
         toastAlert(err.message)
@@ -87,6 +87,8 @@ export default function Home() {
       }
     }
   }
+
+  const massSpectrumList = estList.map((est)=>est.massSpectrum)
 
   if(!cdfData){
     return<></>
@@ -105,15 +107,17 @@ export default function Home() {
           <div className="flex mx-auto">
           <p className="text-primary-color font-bold text-lg mx-auto">安捷伦六组分</p>
           </div>
-          <div className="grid grid-cols-2 gap-8 mt-4">
+          <div className="lg:grid lg:grid-cols-2 gap-8 mt-4">
           {cdfData&&
           <TicPlotly times={cdfData.scanTimes} tics={cdfData.tics} setRangeEvent={setRangeEvent} left={range?.left} right={range?.right}/>
           }
           {cdfData&&<RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>}
           </div>
-          <div className="grid grid-cols-2   gap-8 mt-4 ">
+          <div className="lg:grid lg:grid-cols-2   gap-8 mt-4 ">
             <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
-          </div> x` 
+            
+            {massSpectrumList.length>0&&<ComponentMass massSpectrumList={massSpectrumList}/>}
+          </div>
         </div>
       </main>
       <ToastAlert/>

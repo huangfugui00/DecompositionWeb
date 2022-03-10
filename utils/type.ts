@@ -30,7 +30,13 @@ export type cdfType={
 }
 
 
+export type massSpectrumType={
+    x:number[],
+    y:number[]
+}
+
 export type estType={
+    massSpectrum:massSpectrumType,
     curve:{x:number[],y:number[]},
     peakTimePostion:number,
     peakTimeIndex:number,
