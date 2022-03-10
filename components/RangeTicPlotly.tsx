@@ -1,16 +1,39 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
+import { estType } from 'utils/type';
+import {Data} from 'plotly.js'
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 type RangeTicPlotlyProp={
     times:number[],
     tics:number[],
+    estList:estType[],
     left:number|undefined,
     right:number|undefined,
 }
 
 
 const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
-    const {left,right,times,tics} = props
+    const {left,right,times,tics,estList} = props
+    const rangeTic =   {
+        x: times,
+        y: tics,
+    }
+    let data = [rangeTic]
+    if(estList.length>0){
+        const rangeTimes=estList[0].curve.x
+        let estListCurve = estList.map((est)=>({x:rangeTimes,y:est.curve.y})) 
+        data.push(...estListCurve)
+        const rangeLen = estList[0].curve.y.length
+        let fitTic = new Array(rangeLen).fill(0)
+        for (let index = 0; index < rangeLen; index++) {
+            for(let j = 0 ;j<estList.length;j++){
+                fitTic[index] += estList[j].curve.y[index]
+            }
+        }
+        data.push({x:rangeTimes,y:fitTic})
+    }
+
+  
     return (
             <div className=" h-64" id="myTicDiv" >
              <Plot        
@@ -19,17 +42,9 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
                         staticPlot: true,
                         responsive:true,
                         scrollZoom: true
-                        
-                    }
+                   }
                 }        
-                data={[
-                    {
-                        x: times,
-                        y: tics,
-                        type: 'scatter',
-                        marker: {color: '#0052cc'},
-                    },
-                ]}
+                data={data }
                 layout={{ margin: {
                     l: 50,
                     r: 5,

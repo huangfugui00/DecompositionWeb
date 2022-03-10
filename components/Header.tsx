@@ -1,10 +1,22 @@
 import React from 'react'
+import AppsIcon from '@mui/icons-material/Apps';
+import IconButton from '@mui/material/IconButton'
+import ToolTip from '@mui/material/ToolTip'
 
-const Header = () => {
+type HeaderProp={
+    decompositionEvent:()=>void
+}
+
+const Header:React.FC<HeaderProp> = (props) => {
+    const {decompositionEvent} = props
     return (
-        <div className="flex gap-4">
-            {/* <button className="bg-primary-color px-2 py-1 rounded text-white">加载数据</button> */}
-            <button className="bg-primary-color px-4 py-1 rounded text-white">解谱</button>
+        <div className="flex gap-4 justify-between">
+            <button className=" bg-primary-color px-4 py-1 rounded text-white" onClick={()=>decompositionEvent()}>解谱</button>
+            {/* <ToolTip title="显示信息">
+            <IconButton>
+            <AppsIcon/>
+            </IconButton>
+            </ToolTip> */}
         </div>
     )
 }

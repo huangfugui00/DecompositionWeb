@@ -28,3 +28,17 @@ export type cdfType={
     intensityArr:number[][],
     alignPeaks:number[][]
 }
+
+
+export type estType={
+    curve:{x:number[],y:number[]},
+    peakTimePostion:number,
+    peakTimeIndex:number,
+    componentMz:number[],
+}
+
+export type decompostionType={
+    alignPeaks:number[][],//第一维是采样时间，alignPekas[0]表示第一张质谱图
+    mzArr:number[],
+    scanTimes:number[],
+}

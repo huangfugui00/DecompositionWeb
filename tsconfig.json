@@ -20,6 +20,6 @@
     }
 
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/category/index.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/category/index.js", "pages/_document.js"],
   "exclude": ["node_modules"]
 }

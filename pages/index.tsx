@@ -1,25 +1,42 @@
 import {useState,useEffect} from 'react'
 import Head from 'next/head'
 import Header from '@/components/Header'
-import {ticType,cdfType,rangeType} from 'utils/type'
+import {cdfType,estType,rangeType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
+import deompositionSer from 'services/decompositionSer'
 import ThreePlot from '@/components/ThreePlot'
 import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
+import ModalLoading from '@/components/ModalLoading'
+import {ToastAlert,toastAlert} from '@/components/ToastAlert'
 
 export default function Home() {
   const [cdfData,setCdfData] =  useState<cdfType>()
+  const [estList,setEstList] = useState<estType[]>([])
   const [range,setRange] = useState<rangeType>()
-
+  const [loading,setLoading] = useState(false)
   useEffect(() => {
     const fetchCdf = async()=>{
-      const result = await cdfServices.readCdf()
-      if(result.status){
-        setCdfData(result.data)
+      try{
+        setLoading(true)
+        const result = await cdfServices.readCdf()
+        if(result.status){
+          setCdfData(result.data)
+        }
+        else{
+          toastAlert(result.statusText)
+        }
+      }
+      catch(err:any){
+        toastAlert(err.message)
+    } 
+      finally{
+        setLoading(false)
       }
     }
     fetchCdf()    
   }, [])
+
 
   const setRangeEvent=(left:number,right:number)=>{
     if(cdfData){
@@ -37,11 +54,44 @@ export default function Home() {
     }
   }
 
+  const decompositionEvent = async()=>{
+    if(cdfData&&range&&range.leftIdx&&range.rightIdx){
+      try{
+        const alignPeaks = cdfData?.alignPeaks.slice(range?.leftIdx,range?.rightIdx)
+        const times = cdfData?.scanTimes.slice(range.leftIdx,range.rightIdx)
+        const mz = cdfData?.mzArr
+        const data={
+          alignPeaks:alignPeaks,
+          scanTimes:times,
+          mzArr:mz,
+        }
+        const jsonData = JSON.stringify(data);
+        setLoading(true)
+        if(jsonData){
+          const result =  await deompositionSer.decompostion({data:jsonData})
+          if(result.status){
+            setEstList(result.data)
+
+          }
+          else{
+            toastAlert(result.statusText)
+          }
+        }
+        
+      }
+      catch(err:any){
+        toastAlert(err.message)
+      } 
+      finally{
+        setLoading(false)
+      }
+    }
+  }
+
   if(!cdfData){
     return<></>
   }
  
-
   return (
     <div >
       <Head>
@@ -50,7 +100,7 @@ export default function Home() {
       </Head>
       {/* Header  */}
       <main className="p-4">
-        <Header/>
+        <Header decompositionEvent={decompositionEvent}/>
         <div className="mt-4  p-4 border-t-blue-500 border-t-4">
           <div className="flex mx-auto">
           <p className="text-primary-color font-bold text-lg mx-auto">安捷伦六组分</p>
@@ -59,15 +109,15 @@ export default function Home() {
           {cdfData&&
           <TicPlotly times={cdfData.scanTimes} tics={cdfData.tics} setRangeEvent={setRangeEvent} left={range?.left} right={range?.right}/>
           }
-          {cdfData&&<RangeTicPlotly times={cdfData.scanTimes} tics={cdfData.tics} left={range?.left} right={range?.right}/>}
+          {cdfData&&<RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>}
           </div>
           <div className="grid grid-cols-2   gap-8 mt-4 ">
             <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
-          </div>  
+          </div> x` 
         </div>
       </main>
-
-     
+      <ToastAlert/>
+      <ModalLoading loading={loading}/>
     </div>
   )
 }
