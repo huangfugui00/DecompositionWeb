@@ -1,8 +1,7 @@
-import api,{apiJson} from './api'
-import {decompostionType} from 'utils/type'
+import api from './api'
 const deompositionSer = {
     decompostion(data:{data:string}){
-         return api().post('/api/decomposite',data)
+         return api().post('/decomposite',data)
     }
 }
 

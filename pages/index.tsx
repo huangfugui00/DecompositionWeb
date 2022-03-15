@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import {cdfType,estType,rangeType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import deompositionSer from 'services/decompositionSer'
+import Cdf from 'utils/cdf'
 import ThreePlot from '@/components/ThreePlot'
 import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
@@ -16,6 +17,9 @@ export default function Home() {
   const [estList,setEstList] = useState<estType[]>([])
   const [range,setRange] = useState<rangeType>()
   const [loading,setLoading] = useState(false)
+  const [file,setFile] = useState<File>()
+  const [bExample,setExample] = useState(false)
+
   useEffect(() => {
     const fetchCdf = async()=>{
       try{
@@ -31,8 +35,10 @@ export default function Home() {
         setLoading(false)
       }
     }
-    fetchCdf()    
-  }, [])
+    if(bExample){
+      fetchCdf()    
+    }
+  }, [bExample])
 
 
   const setRangeEvent=(left:number,right:number)=>{
@@ -84,6 +90,30 @@ export default function Home() {
     }
   }
 
+  const handleLoadFile = async(event:React.ChangeEvent<HTMLInputElement>)=>{
+    try{
+      if (!event.target.files || event.target.files.length === 0) {
+        return
+      }
+      const file = event.target.files[0]
+      setFile(file)
+      setLoading(true)
+      const fileReader=new FileReader()
+        fileReader.readAsArrayBuffer(file)
+        fileReader.onload =async(event:any)=>{
+            const cdfObj=new Cdf(event.target.result)
+            await cdfObj.readCDF()
+            setCdfData(cdfObj)
+            setLoading(false)
+        }
+    }
+    catch(err:any){
+      toastAlert(err.message)
+      setLoading(false)
+    }
+
+}
+
   const massSpectrumList = estList.map((est)=>est.massSpectrum)
 
   // if(!cdfData){
@@ -98,10 +128,10 @@ export default function Home() {
       </Head>
       {/* Header  */}
       <main className="p-4">
-        <Header decompositionEvent={decompositionEvent}/>
+        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample}/>
         <div className="mt-4  p-4 border-t-blue-500 border-t-4">
           <div className="flex mx-auto">
-          <p className="text-primary-color font-bold text-lg mx-auto">安捷伦六组分</p>
+          {file&&<p className="text-primary-color font-bold text-lg mx-auto">{file.name}</p>}
           </div>
           <div className="lg:grid lg:grid-cols-2 gap-8 mt-4">
           {cdfData&&
@@ -109,9 +139,12 @@ export default function Home() {
           }
           {cdfData&&<RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>}
           </div>
-          <div className="lg:grid lg:grid-cols-2   gap-8 mt-4 ">
-            {cdfData&&<ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>}
-            
+          <div className="lg:grid lg:grid-cols-2   gap-8 mt-4 border-t-blue-500 border-t">
+            {cdfData&&
+            <div className="border-r-blue-500 ">
+            <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
+            </div>
+            }
             {massSpectrumList.length>0&&<ComponentMass massSpectrumList={massSpectrumList}/>}
           </div>
         </div>
