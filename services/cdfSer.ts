@@ -2,7 +2,7 @@ import api from './api'
 
 const cdfServices = {
     readCdf(){
-        return api().get('/cdf')
+        return api().get('/api/cdf')
     }
 }
 

@@ -20,13 +20,9 @@ export default function Home() {
     const fetchCdf = async()=>{
       try{
         setLoading(true)
-        const result = await cdfServices.readCdf()
-        if(result.status){
-          setCdfData(result.data)
-        }
-        else{
-          toastAlert(result.statusText)
-        }
+        cdfServices.readCdf()
+        .then(result=>setCdfData(result.data))
+        .catch(err=>toastAlert(err.message))
       }
       catch(err:any){
         toastAlert(err.message)
@@ -90,9 +86,9 @@ export default function Home() {
 
   const massSpectrumList = estList.map((est)=>est.massSpectrum)
 
-  if(!cdfData){
-    return<></>
-  }
+  // if(!cdfData){
+  //   return<></>
+  // }
  
   return (
     <div >
@@ -114,7 +110,7 @@ export default function Home() {
           {cdfData&&<RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>}
           </div>
           <div className="lg:grid lg:grid-cols-2   gap-8 mt-4 ">
-            <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
+            {cdfData&&<ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>}
             
             {massSpectrumList.length>0&&<ComponentMass massSpectrumList={massSpectrumList}/>}
           </div>

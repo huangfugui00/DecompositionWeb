@@ -2,8 +2,10 @@
 import axios from 'axios'
 
 function api(){
+  console.log( process.env.NEXT_PUBLIC_BASE_URL)
   const axiosInstance = axios.create({
-     baseURL: `http://localhost:3001/`
+    //  baseURL: 'http://localhost:3001'
+     baseURL: process.env.NEXT_PUBLIC_BASE_URL
   })
 
   //每个axios请求带上token(存在的话)

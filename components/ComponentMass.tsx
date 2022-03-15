@@ -107,7 +107,7 @@ const ComponentMass:React.FC<ComponentMassProp> = (props) => {
                 <option value={-1}>所有谱图</option>
                 {
                     massSpectrumList.map((massSpectrum,i)=>
-                        <option value={i}>{`成分谱图${i+1}`}</option>
+                        <option value={i} >{`成分谱图${i+1}`}</option>
                     )
                 }
             </select>

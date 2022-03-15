@@ -17,11 +17,12 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
     const rangeTic =   {
         x: times,
         y: tics,
+        name:'实际TIC'
     }
     let data = [rangeTic]
     if(estList.length>0){
         const rangeTimes=estList[0].curve.x
-        let estListCurve = estList.map((est)=>({x:rangeTimes,y:est.curve.y})) 
+        let estListCurve = estList.map((est,i)=>({x:rangeTimes,y:est.curve.y,name:`成分${i+1}` })) 
         data.push(...estListCurve)
         const rangeLen = estList[0].curve.y.length
         let fitTic = new Array(rangeLen).fill(0)
@@ -30,7 +31,7 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
                 fitTic[index] += estList[j].curve.y[index]
             }
         }
-        data.push({x:rangeTimes,y:fitTic})
+        data.push({x:rangeTimes,y:fitTic,name:'拟合TIC'})
     }
 
   
@@ -39,10 +40,10 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
              <Plot        
                 config={
                     {
-                        staticPlot: true,
+                        // staticPlot: true,
                         responsive:true,
-                        scrollZoom: true
-                   }
+                        scrollZoom: true,
+                  }
                 }        
                 data={data }
                 layout={{ margin: {
@@ -52,6 +53,7 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
                     t: 0
                   },
                   xaxis: {range: [left,right]},
+                  
                  
                 }}
                 style={{height:'100%',width:'100%'}}
