@@ -1,7 +1,7 @@
 import {useState,useEffect} from 'react'
 import Head from 'next/head'
 import Header from '@/components/Header'
-import {cdfType,estType,rangeType} from 'utils/type'
+import {cdfType,estType,rangeType,algOptionType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import deompositionSer from 'services/decompositionSer'
 import Cdf from 'utils/cdf'
@@ -9,8 +9,10 @@ import ThreePlot from '@/components/ThreePlot'
 import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
 import ModalLoading from '@/components/ModalLoading'
-import {ToastAlert,toastAlert} from '@/components/ToastAlert'
+import {ToastAlert,toastAlert,toastPag} from '@/components/ToastAlert'
 import ComponentMass from '@/components/ComponentMass'
+import {Drawer} from '@mui/material'
+import SetAndLook from '@/components/SetAndLook'
 
 export default function Home() {
   const [cdfData,setCdfData] =  useState<cdfType>()
@@ -19,6 +21,8 @@ export default function Home() {
   const [loading,setLoading] = useState(false)
   const [file,setFile] = useState<File>()
   const [bExample,setExample] = useState(false)
+  const [bDrawer,setDrawer] = useState(false)
+  const [algSel,setAlgSel] = useState<algOptionType>('timeSerial')
 
   useEffect(() => {
     const fetchCdf = async()=>{
@@ -33,9 +37,13 @@ export default function Home() {
     } 
       finally{
         setLoading(false)
+        setFile(undefined)
+        setEstList([])
+        setRange(undefined)
       }
     }
     if(bExample){
+      console.log('fetch example')
       fetchCdf()    
     }
   }, [bExample])
@@ -71,9 +79,14 @@ export default function Home() {
         const jsonData = JSON.stringify(data);
         setLoading(true)
         if(jsonData){
-          const result =  await deompositionSer.decompostion({data:jsonData})
+          const result =  await deompositionSer.decompostion({data:jsonData,algSel:algSel})
           if(result&&result.status){
-            console.log(result.data)
+            if(result.data.length===0){
+              toastPag('该区域内未找到成分')
+            }
+            else{
+              toastAlert(`该区域内共解析到${result.data.length}个成分`,{type:'success'})
+            }
             setEstList(result.data)
           }
           else{
@@ -82,7 +95,7 @@ export default function Home() {
         }
       }
       catch(err:any){
-        toastAlert(err.message)
+        toastAlert(err.message,{type:"error"})
       } 
       finally{
         setLoading(false)
@@ -105,12 +118,16 @@ export default function Home() {
             await cdfObj.readCDF()
             setCdfData(cdfObj)
             setLoading(false)
+            setExample(false)
+            setEstList([])
+            setRange(undefined)
         }
     }
     catch(err:any){
-      toastAlert(err.message)
+      toastAlert(err.message,{type:"error"})
       setLoading(false)
     }
+    
 
 }
 
@@ -128,7 +145,7 @@ export default function Home() {
       </Head>
       {/* Header  */}
       <main className="p-4">
-        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample}/>
+        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample} openDrawer={()=>setDrawer(true)}/>
         <div className="mt-4  p-4 border-t-blue-500 border-t-4">
           <div className="flex mx-auto">
           {file&&<p className="text-primary-color font-bold text-lg mx-auto">{file.name}</p>}
@@ -151,6 +168,13 @@ export default function Home() {
       </main>
       <ToastAlert/>
       <ModalLoading loading={loading}/>
+      <Drawer
+            open={bDrawer}
+            onClose={()=>setDrawer(false)}
+            anchor="right"
+          >
+           <SetAndLook algOption={algSel} setAlgOption={setAlgSel}/> 
+          </Drawer>
     </div>
   )
 }

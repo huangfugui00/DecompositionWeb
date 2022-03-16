@@ -48,3 +48,5 @@ export type decompostionType={
     mzArr:number[],
     scanTimes:number[],
 }
+
+export type algOptionType='timeSerial' | 'similarity'

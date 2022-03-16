@@ -51,7 +51,9 @@ class Cdf {
             const intensity:number[] = this.intensityArr[i]
             for(let j = 0 ;j<this.massArr[i].length;j++){
                 const peakInd = Math.round(mass[j])-this.minMz
-                singTimePeaks[peakInd] = singTimePeaks[peakInd]<intensity[j]?intensity[j]:singTimePeaks[peakInd]
+                if(peakInd<singTimePeaks.length){
+                    singTimePeaks[peakInd] = singTimePeaks[peakInd]<intensity[j]?intensity[j]:singTimePeaks[peakInd]
+                }
             }
             if(singTimePeaks.length!==121){
                 console.log(singTimePeaks.length)
