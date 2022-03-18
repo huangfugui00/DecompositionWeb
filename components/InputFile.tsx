@@ -9,7 +9,7 @@ const InputFile = ({loading,handleOnChange}:inputFileProp) => {
     return (
             <div className="relative">
                 <label className="bg-primary-color px-4 py-1.5 rounded text-white cursor-pointer" htmlFor="single">
-                    {loading ? 'Uploading ...' : '加载'}
+                    {loading ? 'Uploading ...' : '上传'}
                 </label>
                 <input
                 className="hidden "

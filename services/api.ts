@@ -1,8 +1,8 @@
 // const axios = require('axios')
 import axios from 'axios'
-
+console.log( process.env.NEXT_PUBLIC_BASE_URL)
 function api(){
-  console.log( process.env.NEXT_PUBLIC_BASE_URL)
+  
   const axiosInstance = axios.create({
     //  baseURL: 'http://localhost:3001'
      baseURL: process.env.NEXT_PUBLIC_BASE_URL

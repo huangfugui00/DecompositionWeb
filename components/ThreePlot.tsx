@@ -32,21 +32,43 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
                 y:displayTimes,
                 z:displayZ,
                 type: 'surface',    
+                xaxis:'x2s'
             }
         ]}
         layout={{
-            height:450,
+            scene: {
+                xaxis:{title: 'M/Z'},
+                yaxis:{title: 'Time(s)'},
+                zaxis:{title: 'Intensity'},
+                },
+            height:500,
+            title:{
+                text:'三维图',    
+            },
+            xaxis:{
+                range: [left,right],
+              title: 'Time(s)',
+              titlefont: {
+                family: 'Arial, sans-serif',
+                size: 15,
+              },
+            },
+            yaxis:{
+              title:'M/Z'
+            },
+        
             margin: {
                 l: 5,
                 r: 5,
                 b: 20,
-                t: 9
+                t: 50
               },
         }}
         style={{height:'100%',width:'100%'}}
         config={
             {
-                responsive:true
+                responsive:true,
+                displayModeBar: false
             }
             
         }  

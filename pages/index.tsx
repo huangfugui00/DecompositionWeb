@@ -146,23 +146,35 @@ export default function Home() {
       {/* Header  */}
       <main className="p-4">
         <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample} openDrawer={()=>setDrawer(true)}/>
-        <div className="mt-4  p-4 border-t-blue-500 border-t-4">
-          <div className="flex mx-auto">
-          {file&&<p className="text-primary-color font-bold text-lg mx-auto">{file.name}</p>}
+        <div className="mt-4 border-t-blue-500 border-t-4">
+          {/* 文件名 */}
+          <div className="flex mx-auto mt-2">
+            {file&&<p className="text-primary-color font-bold text-lg mx-auto">{file.name}</p>}
           </div>
-          <div className="lg:grid lg:grid-cols-2 gap-8 mt-4">
+          {/* tic rangeTic */}
+          <div className="lg:grid lg:grid-cols-5 gap-8 mt-2">
           {cdfData&&
+          <div className="col-span-3">
           <TicPlotly times={cdfData.scanTimes} tics={cdfData.tics} setRangeEvent={setRangeEvent} left={range?.left} right={range?.right}/>
-          }
-          {cdfData&&<RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>}
           </div>
-          <div className="lg:grid lg:grid-cols-2   gap-8 mt-4 border-t-blue-500 border-t">
+          }
+          {cdfData&&
+          <div className="col-span-2">
+          <RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>
+          </div>
+          }
+          </div>
+          <div className="lg:grid lg:grid-cols-4   gap-8 mt-4 border-t-gray-300 border-t">
             {cdfData&&
-            <div className="border-r-blue-500 ">
+            <div className="col-span-2 border-r-gray-300 border-r">
             <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
             </div>
             }
-            {massSpectrumList.length>0&&<ComponentMass massSpectrumList={massSpectrumList}/>}
+            {massSpectrumList.length>0&&
+            <div className="col-span-2">
+            <ComponentMass massSpectrumList={massSpectrumList}/>
+            </div>
+            }
           </div>
         </div>
       </main>

@@ -27,7 +27,7 @@ const PlotList=({massSpectrumList}:PlotListProp)=>{
                                 }
                             ]}
                             layout={{
-                                height:450/massSpectrumList.length,
+                                height:500/massSpectrumList.length,
                                 margin: {
                                     l: 50,
                                     r: 5,
@@ -39,6 +39,7 @@ const PlotList=({massSpectrumList}:PlotListProp)=>{
                             config={
                                 {
                                     responsive:true,
+                                    displayModeBar: false,  
                                 }
                                 
                             }  
@@ -75,19 +76,35 @@ const ComponentMass:React.FC<ComponentMassProp> = (props) => {
                             }
                         ]}
                         layout={{
-                            height:450,
+                            height:500,
                             margin: {
                                 l: 50,
                                 r: 5,
-                                b: 20,
-                                t: 9
+                                b: 30,
+                                t: 50
                             },
-                         
+                            title:{
+                                text:`成分谱${nThComponent+1}`,    
+                            },
+                            xaxis:{
+                              title: 'M/Z',
+                              titlefont: {
+                                family: 'Arial, sans-serif',
+                                size: 12,
+                              //   color: 'grey'
+                              },
+                          
+                              
+                            },
+                            yaxis:{
+                              title:'RelIntensity'
+                            },
                         }}
                         style={{height:'100%',width:'90%'}}
                         config={
                             {
-                                responsive:true
+                                responsive:true,
+                                displayModeBar: false,
                             }
                             
                         }  

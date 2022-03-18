@@ -36,23 +36,38 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
 
   
     return (
-            <div className=" h-64" id="myTicDiv" >
+            <div className="h-64" id="myTicDiv" >
              <Plot        
                 config={
                     {
-                        // staticPlot: true,
                         responsive:true,
                         scrollZoom: true,
+                        displayModeBar: false,
                   }
                 }        
                 data={data }
                 layout={{ margin: {
                     l: 50,
                     r: 5,
-                    b: 20,
-                    t: 0
+                    b: 30,
+                    t: 30
                   },
-                  xaxis: {range: [left,right]},
+                title:{
+                    text:'局部TIC',    
+                },
+                xaxis:{
+                    range: [left,right],
+                  title: 'Time(s)',
+                  titlefont: {
+                    family: 'Arial, sans-serif',
+                    size: 15,
+                  },
+              
+                  
+                },
+                yaxis:{
+                  title:'Intensity'
+                },
                   
                  
                 }}

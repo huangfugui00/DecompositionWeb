@@ -33,7 +33,9 @@ const TicPlotly:React.FC<TicPlotlyProp> = (props) => {
                     {
                         staticPlot: false,
                         responsive:true,
-                        scrollZoom: true
+                        scrollZoom: true,
+                        displayModeBar: false,
+                        
                     }
                     
                 }        
@@ -48,8 +50,24 @@ const TicPlotly:React.FC<TicPlotlyProp> = (props) => {
                 layout={{ margin: {
                     l: 50,
                     r: 5,
-                    b: 20,
-                    t: 0
+                    b: 30,
+                    t: 30
+                  },
+                  title:{
+                      text:'全局TIC',    
+                  },
+                  xaxis:{
+                    title: 'Time(s)',
+                    titlefont: {
+                      family: 'Arial, sans-serif',
+                      size: 15,
+                    //   color: 'grey'
+                    },
+                
+                    
+                  },
+                  yaxis:{
+                    title:'Intensity'
                   },
                   shapes:[  {
                     type: 'rect',
