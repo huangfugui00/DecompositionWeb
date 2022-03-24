@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import InputFile from '@/components/InputFile'
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Tooltip,IconButton} from '@mui/material'
@@ -6,22 +7,29 @@ import {Tooltip,IconButton} from '@mui/material'
 type HeaderProp={
     decompositionEvent:()=>void
     handleLoadFile:(event:React.ChangeEvent<HTMLInputElement>)=>void
-    bExample:boolean,
+    bExample:boolean
     setExample:(bExample:boolean)=>void
     openDrawer:()=>void
+    bNist:boolean
 }
 
 
 
 
 const Header:React.FC<HeaderProp> = (props) => {
-    const {decompositionEvent,handleLoadFile,bExample,setExample,openDrawer} = props
- 
+    const {decompositionEvent,handleLoadFile,bExample,setExample,openDrawer,bNist} = props
+
     return (
         <div className="flex gap-4  items-center justify-between">
             <div className="flex items-center gap-4">
             <InputFile loading={false} handleOnChange={handleLoadFile}/>
             <button className=" bg-primary-color px-4 py-1 rounded text-white" onClick={(e)=>decompositionEvent()}>解谱</button>
+            <Link href="/nist">
+                <button  className={` px-2 py-1 rounded text-white ${bNist?'bg-primary-color':'bg-gray-300'}`} disabled={!bNist}>
+                    Nist比对
+                </button>
+            </Link>
+            {/* <button className={` px-2 py-1 rounded text-white ${bNist?'bg-primary-color':'bg-gray-300'}`} disabled={!bNist} onClick={()=>console.log(10)}>Nist比对</button> */}
             </div>
             
             <div>

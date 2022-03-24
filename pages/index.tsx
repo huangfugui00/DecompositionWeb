@@ -1,7 +1,7 @@
-import {useState,useEffect} from 'react'
+import {useState,useEffect,useContext} from 'react'
 import Head from 'next/head'
 import Header from '@/components/Header'
-import {cdfType,estType,rangeType,algOptionType} from 'utils/type'
+import {algOptionType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import deompositionSer from 'services/decompositionSer'
 import Cdf from 'utils/cdf'
@@ -9,15 +9,19 @@ import ThreePlot from '@/components/ThreePlot'
 import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
 import ModalLoading from '@/components/ModalLoading'
-import {ToastAlert,toastAlert,toastPag} from '@/components/ToastAlert'
+import {toastAlert} from '@/components/ToastAlert'
 import ComponentMass from '@/components/ComponentMass'
 import {Drawer} from '@mui/material'
 import SetAndLook from '@/components/SetAndLook'
+import {cdfContext,estListContext,rangeContext,bNistContext} from './_app'
+import Layout from '@/components/Layout'
 
 export default function Home() {
-  const [cdfData,setCdfData] =  useState<cdfType>()
-  const [estList,setEstList] = useState<estType[]>([])
-  const [range,setRange] = useState<rangeType>()
+  const {cdf:cdfData,setCdf:setCdfData} = useContext(cdfContext)
+  const {estList,setEstList} = useContext(estListContext)
+  const {range,setRange} = useContext(rangeContext)
+  const {bNist,setNist} = useContext(bNistContext)
+
   const [loading,setLoading] = useState(false)
   const [file,setFile] = useState<File>()
   const [bExample,setExample] = useState(false)
@@ -39,7 +43,7 @@ export default function Home() {
         setLoading(false)
         setFile(undefined)
         setEstList([])
-        setRange(undefined)
+        setNist(false)
       }
     }
     if(bExample){
@@ -48,6 +52,7 @@ export default function Home() {
     }
   }, [bExample])
 
+  
 
   const setRangeEvent=(left:number,right:number)=>{
     if(cdfData){
@@ -69,7 +74,8 @@ export default function Home() {
     if(cdfData&&range&&range.leftIdx&&range.rightIdx){
       try{
         const alignPeaks = cdfData?.alignPeaks.slice(range?.leftIdx,range?.rightIdx)
-        const times = cdfData?.scanTimes.slice(range.leftIdx,range.rightIdx)
+        let times = cdfData?.scanTimes.slice(range.leftIdx,range.rightIdx)
+        
         const mz = cdfData?.mzArr
         const data={
           alignPeaks:alignPeaks,
@@ -82,12 +88,13 @@ export default function Home() {
           const result =  await deompositionSer.decompostion({data:jsonData,algSel:algSel})
           if(result&&result.status){
             if(result.data.length===0){
-              toastPag('该区域内未找到成分')
+              toastAlert('该区域内未找到成分')
             }
             else{
               toastAlert(`该区域内共解析到${result.data.length}个成分`,{type:'success'})
             }
             setEstList(result.data)
+            setNist(true)
           }
           else{
             toastAlert(result.statusText)
@@ -116,11 +123,13 @@ export default function Home() {
         fileReader.onload =async(event:any)=>{
             const cdfObj=new Cdf(event.target.result)
             await cdfObj.readCDF()
+            // cdfObj.scanTimes = cdfObj.scanTimes.map(time=>t)
+
             setCdfData(cdfObj)
             setLoading(false)
             setExample(false)
             setEstList([])
-            setRange(undefined)
+            setNist(false)
         }
     }
     catch(err:any){
@@ -133,10 +142,6 @@ export default function Home() {
 
   const massSpectrumList = estList.map((est)=>est.massSpectrum)
 
-  // if(!cdfData){
-  //   return<></>
-  // }
- 
   return (
     <div >
       <Head>
@@ -144,8 +149,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Header  */}
-      <main className="p-4">
-        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample} openDrawer={()=>setDrawer(true)}/>
+      <Layout>
+      <main>
+        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample} openDrawer={()=>setDrawer(true)} bNist={bNist}/>
         <div className="mt-4 border-t-blue-500 border-t-4">
           {/* 文件名 */}
           <div className="flex mx-auto mt-2">
@@ -155,38 +161,40 @@ export default function Home() {
           <div className="lg:grid lg:grid-cols-5 gap-8 mt-2">
           {cdfData&&
           <div className="col-span-3">
-          <TicPlotly times={cdfData.scanTimes} tics={cdfData.tics} setRangeEvent={setRangeEvent} left={range?.left} right={range?.right}/>
+            <TicPlotly times={cdfData.scanTimes} tics={cdfData.tics} setRangeEvent={setRangeEvent} left={range?.left} right={range?.right}/>
           </div>
           }
           {cdfData&&
           <div className="col-span-2">
-          <RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right}/>
+            <RangeTicPlotly  times={cdfData.scanTimes} tics={cdfData.tics} estList={estList} left={range?.left} right={range?.right} title="局部TIC"/>
           </div>
           }
           </div>
-          <div className="lg:grid lg:grid-cols-4   gap-8 mt-4 border-t-gray-300 border-t">
+          <div className="lg:grid lg:grid-cols-4   gap-8 mt-4  border-y">
             {cdfData&&
             <div className="col-span-2 border-r-gray-300 border-r">
-            <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx}/>
+            <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx} title={'三维图'}/>
             </div>
             }
             {massSpectrumList.length>0&&
             <div className="col-span-2">
-            <ComponentMass massSpectrumList={massSpectrumList}/>
+              <ComponentMass massSpectrumList={massSpectrumList}/>
             </div>
             }
           </div>
         </div>
+        <ModalLoading loading={loading}/>
+        <Drawer
+          open={bDrawer}
+          onClose={()=>setDrawer(false)}
+          anchor="right"
+        >
+            <SetAndLook algOption={algSel} setAlgOption={setAlgSel}/> 
+        </Drawer>
       </main>
-      <ToastAlert/>
-      <ModalLoading loading={loading}/>
-      <Drawer
-            open={bDrawer}
-            onClose={()=>setDrawer(false)}
-            anchor="right"
-          >
-           <SetAndLook algOption={algSel} setAlgOption={setAlgSel}/> 
-          </Drawer>
+      </Layout>
+    
+      
     </div>
   )
 }

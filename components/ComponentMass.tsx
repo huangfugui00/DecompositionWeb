@@ -2,7 +2,6 @@
 import {massSpectrumType} from 'utils/type'
 import React,{useState} from 'react'
 import dynamic from 'next/dynamic'
-import { parse } from 'path/win32';
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 type ComponentMassProp={

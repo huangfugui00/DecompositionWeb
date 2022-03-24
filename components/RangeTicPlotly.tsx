@@ -9,11 +9,12 @@ type RangeTicPlotlyProp={
     estList:estType[],
     left:number|undefined,
     right:number|undefined,
+    title?:string,
 }
 
 
 const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
-    const {left,right,times,tics,estList} = props
+    const {left,right,times,tics,estList,title} = props
     const rangeTic =   {
         x: times,
         y: tics,
@@ -53,7 +54,7 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
                     t: 30
                   },
                 title:{
-                    text:'局部TIC',    
+                    text:title,    
                 },
                 xaxis:{
                     range: [left,right],

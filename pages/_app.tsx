@@ -1,9 +1,48 @@
 import 'tailwindcss/tailwind.css'
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import { useEffect,createContext, useState } from 'react';
+import {cdfType,estType,rangeType} from 'utils/type'
+
+type cdfContextType={
+  cdf:cdfType | undefined,
+  setCdf:(cdf:cdfType)=>void
+}
+type estListContextType={
+  estList:estType[],
+  setEstList:(estList:estType[])=>void
+}
+type rangeContextType={
+  range:rangeType | undefined,
+  setRange:(range:rangeType)=>void
+}
+type nistContextType={
+  bNist:boolean,
+  setNist:(bNist:boolean)=>void
+}
+
+export const cdfContext = createContext({} as cdfContextType)
+export const estListContext = createContext({} as estListContextType)
+export const rangeContext = createContext({} as rangeContextType)
+export const bNistContext = createContext({} as nistContextType)
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  const [cdf,setCdf]=useState<cdfType>()
+  const [estList,setEstList] = useState<estType[]>([])
+  const [range,setRange] = useState<rangeType>()
+  const [bNist,setNist] = useState(false)
+  
+  return (
+    <cdfContext.Provider value={ {cdf,setCdf} }>
+      <estListContext.Provider value={ {estList,setEstList} }>
+        <rangeContext.Provider value={{range,setRange}}>
+        <bNistContext.Provider value={{bNist,setNist}}>
+          <Component {...pageProps} />
+        </bNistContext.Provider>
+        </rangeContext.Provider >
+      </estListContext.Provider>
+    </cdfContext.Provider>
+  )
 }
 
 export default MyApp

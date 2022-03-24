@@ -8,9 +8,11 @@ type ThreePlotProp={
     mzArr:number[],
     left:number | undefined,
     right:number | undefined,
+    height?:number
+    title?:string
 }
 const ThreePlot:React.FC<ThreePlotProp> = (props) => {
-    const {alignPeaks,times,mzArr,left,right} = props
+    const {alignPeaks,times,mzArr,left,right,height,title} = props
     let displayTimes = times
     let displayZ = alignPeaks
     if(left&&right){
@@ -19,9 +21,10 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
     }
     if(displayTimes.length>500){
         return(
-            <div className="flex items-center justify-center">
-                <p>所选范围太大</p>
-            </div>
+            <div></div>
+            // <div className="flex items-center justify-center">
+            //     <p>所选范围太大</p>
+            // </div>
         )
     }
     return (
@@ -41,9 +44,9 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
                 yaxis:{title: 'Time(s)'},
                 zaxis:{title: 'Intensity'},
                 },
-            height:500,
+            height:height?height:500,
             title:{
-                text:'三维图',    
+                text:title,    
             },
             xaxis:{
                 range: [left,right],
