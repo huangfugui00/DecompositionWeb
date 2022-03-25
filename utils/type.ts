@@ -49,4 +49,23 @@ export type decompostionType={
     scanTimes:number[],
 }
 
+type nistResultType={
+    name:string,
+    MF:number,
+    RMF:number,
+    pro:number,
+    formula:string,
+    CAS:string,
+}
+
+export type componentNistResultType={
+    RT:number,
+    nistResult:nistResultType[],
+}
+
+export type nistDataType={
+    peaklist:{mz:number,intensity:number}[],
+    scanTime:number,
+}
+
 export type algOptionType='timeSerial' | 'similarity'

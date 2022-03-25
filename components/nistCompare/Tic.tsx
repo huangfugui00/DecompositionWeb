@@ -5,11 +5,12 @@ const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 type TicPlotlyProp={
     times:number[],
     tics:number[],
+    selEstTime:number,
 }
 
 
 const Tic:React.FC<TicPlotlyProp> = (props) => {
-    const {times,tics} = props
+    const {times,tics,selEstTime} = props
     const maxY = Math.max(...tics)
 
     return (
@@ -54,9 +55,9 @@ const Tic:React.FC<TicPlotlyProp> = (props) => {
                   shapes:[{
                     type: 'line',
                     xref: 'x',
-                    x0: 140,
+                    x0: selEstTime,
                     y0: 0,
-                    x1: 140,
+                    x1: selEstTime,
                     y1:maxY,
                     opacity: 0.5,
                     line: {

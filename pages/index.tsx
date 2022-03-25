@@ -1,9 +1,11 @@
 import {useState,useEffect,useContext} from 'react'
 import Head from 'next/head'
+import {useRouter} from 'next/router'
 import Header from '@/components/Header'
-import {algOptionType} from 'utils/type'
+import {algOptionType, nistDataType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import deompositionSer from 'services/decompositionSer'
+import nistSer from 'services/nistSer'
 import Cdf from 'utils/cdf'
 import ThreePlot from '@/components/ThreePlot'
 import TicPlotly from '@/components/TicPlotly'
@@ -27,6 +29,8 @@ export default function Home() {
   const [bExample,setExample] = useState(false)
   const [bDrawer,setDrawer] = useState(false)
   const [algSel,setAlgSel] = useState<algOptionType>('timeSerial')
+
+  const router = useRouter()
 
   useEffect(() => {
     const fetchCdf = async()=>{
@@ -123,7 +127,6 @@ export default function Home() {
         fileReader.onload =async(event:any)=>{
             const cdfObj=new Cdf(event.target.result)
             await cdfObj.readCDF()
-            // cdfObj.scanTimes = cdfObj.scanTimes.map(time=>t)
 
             setCdfData(cdfObj)
             setLoading(false)
@@ -136,9 +139,30 @@ export default function Home() {
       toastAlert(err.message,{type:"error"})
       setLoading(false)
     }
-    
+  }
 
-}
+  const handleNistCompare=async()=>{
+    if(estList.length>0){
+      try{
+        const nistDataList=estList.map(est=>{
+          let peakList = est.massSpectrum.x.map((mz,i)=>{return{mz:est.massSpectrum.x[i],intensity:est.massSpectrum.y[i]}})
+          peakList=peakList.filter(peak=>peak.intensity>0.01)
+          return {scanTime:est.peakTimePostion,peaklist:peakList}
+        })
+        setLoading(true)
+        const result = await nistSer.compare(nistDataList) 
+        router.push('/nist')
+        console.log(result)
+        setLoading(false)
+      }
+      catch(err:any){
+        toastAlert(err.message,{type:"error"})
+        setLoading(false)
+      }
+
+    }
+
+  }
 
   const massSpectrumList = estList.map((est)=>est.massSpectrum)
 
@@ -151,8 +175,8 @@ export default function Home() {
       {/* Header  */}
       <Layout>
       <main>
-        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample} openDrawer={()=>setDrawer(true)} bNist={bNist}/>
-        <div className="mt-4 border-t-blue-500 border-t-4">
+        <Header decompositionEvent={decompositionEvent} handleLoadFile={handleLoadFile} bExample={bExample} setExample={setExample} openDrawer={()=>setDrawer(true)} bNist={bNist} handleNistCompare={handleNistCompare}/>
+        <div className="mt-4  border-t-2">
           {/* 文件名 */}
           <div className="flex mx-auto mt-2">
             {file&&<p className="text-primary-color font-bold text-lg mx-auto">{file.name}</p>}

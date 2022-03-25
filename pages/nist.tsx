@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Layout from '@/components/Layout'
 import Header from '@/components/nistCompare/Header'
 import Tic from '@/components/nistCompare/Tic'
-import {cdfContext,estListContext,rangeContext} from './_app'
+import {cdfContext,estListContext,rangeContext,nistResultsContext} from './_app'
 import ThreePlot from '@/components/ThreePlot'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
 import ComponentBar from '@/components/nistCompare/ComponentBar'
@@ -16,6 +16,7 @@ const nist = () => {
     const {cdf,setCdf}=useContext(cdfContext)
     const {range,setRange}=useContext(rangeContext)
     const {estList,setEstList}=useContext(estListContext)
+    const {nistResults,}=useContext(nistResultsContext)
     const [selNthEst,setSelNthEst] = useState(0)
 
     const handleClickTableRow=(selNthEst:number)=>{ 
@@ -32,8 +33,8 @@ const nist = () => {
         return<></>
     }
     const selEst=estList[selNthEst]
-
-
+    const selEstTime = selEst.peakTimePostion
+    const selNistResult = nistResults[selNthEst]
 
     return (
         <div>
@@ -41,7 +42,7 @@ const nist = () => {
                 <main>
                     <Header/>
                     <div className=" border-t-2 mb-2    ">
-                            {cdf&&<Tic times={cdf.scanTimes} tics={cdf.tics}/>}
+                            {cdf&&<Tic times={cdf.scanTimes} tics={cdf.tics} selEstTime={selEstTime}/>}
                     </div>
                     <div className="md:flex  border-y-2">
                         <div className="md:flex-none border-r md:w-96 lg:w-[30rem]">
@@ -59,7 +60,7 @@ const nist = () => {
                                     <ComponentTable estList={estList} selNthEst={selNthEst} handleClickTableRow={handleClickTableRow}/>
                                 </div>
                                
-                                    <button className="bg-primary-color px-4 py-1 rounded text-white">NIST比对</button>
+                                <button className="bg-primary-color px-4 py-1 rounded text-white">NIST比对</button>
                             </div>
                         </div>
                     </div>
