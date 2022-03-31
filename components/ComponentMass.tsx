@@ -90,7 +90,6 @@ const ComponentMass:React.FC<ComponentMassProp> = (props) => {
                               titlefont: {
                                 family: 'Arial, sans-serif',
                                 size: 12,
-                              //   color: 'grey'
                               },
                           
                               

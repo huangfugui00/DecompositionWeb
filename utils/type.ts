@@ -49,7 +49,7 @@ export type decompostionType={
     scanTimes:number[],
 }
 
-type nistResultType={
+export type nistResultType={
     name:string,
     MF:number,
     RMF:number,

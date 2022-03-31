@@ -35,9 +35,11 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
                 y:displayTimes,
                 z:displayZ,
                 type: 'surface',    
-                xaxis:'x2s'
+                xaxis:'x2s',
+                showscale:true
             }
         ]}
+
         layout={{
             scene: {
                 xaxis:{title: 'M/Z'},
@@ -59,10 +61,14 @@ const ThreePlot:React.FC<ThreePlotProp> = (props) => {
             yaxis:{
               title:'M/Z'
             },
+            
+            
         
+            // showlegend:false,
+            // bargap:0.1,
             margin: {
-                l: 5,
-                r: 5,
+                l: 0,
+                r: 0,
                 b: 20,
                 t: 50
               },

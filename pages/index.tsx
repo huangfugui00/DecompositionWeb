@@ -2,7 +2,7 @@ import {useState,useEffect,useContext} from 'react'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
 import Header from '@/components/Header'
-import {algOptionType, nistDataType} from 'utils/type'
+import {algOptionType,componentNistResultType, rangeType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import deompositionSer from 'services/decompositionSer'
 import nistSer from 'services/nistSer'
@@ -15,14 +15,18 @@ import {toastAlert} from '@/components/ToastAlert'
 import ComponentMass from '@/components/ComponentMass'
 import {Drawer} from '@mui/material'
 import SetAndLook from '@/components/SetAndLook'
-import {cdfContext,estListContext,rangeContext,bNistContext} from './_app'
+import NistResultTabl from '@/components/nistCompare/NistResultTab'
+import {cdfContext,estListContext,rangeContext,bNistContext,nistResultsContext} from './_app'
 import Layout from '@/components/Layout'
+import NistResultTab from '@/components/nistCompare/NistResultTab'
+
 
 export default function Home() {
   const {cdf:cdfData,setCdf:setCdfData} = useContext(cdfContext)
   const {estList,setEstList} = useContext(estListContext)
   const {range,setRange} = useContext(rangeContext)
   const {bNist,setNist} = useContext(bNistContext)
+  const {nistResults,setNistResults} = useContext(nistResultsContext)
 
   const [loading,setLoading] = useState(false)
   const [file,setFile] = useState<File>()
@@ -44,6 +48,7 @@ export default function Home() {
         toastAlert(err.message)
     } 
       finally{
+        setRange({} as rangeType)
         setLoading(false)
         setFile(undefined)
         setEstList([])
@@ -133,6 +138,7 @@ export default function Home() {
             setExample(false)
             setEstList([])
             setNist(false)
+            setRange({} as rangeType)
         }
     }
     catch(err:any){
@@ -144,6 +150,7 @@ export default function Home() {
   const handleNistCompare=async()=>{
     if(estList.length>0){
       try{
+        console.log('front nist compare')
         const nistDataList=estList.map(est=>{
           let peakList = est.massSpectrum.x.map((mz,i)=>{return{mz:est.massSpectrum.x[i],intensity:est.massSpectrum.y[i]}})
           peakList=peakList.filter(peak=>peak.intensity>0.01)
@@ -151,9 +158,12 @@ export default function Home() {
         })
         setLoading(true)
         const result = await nistSer.compare(nistDataList) 
-        router.push('/nist')
-        console.log(result)
         setLoading(false)
+        if(result.status){
+          const nistResults = result.data  as componentNistResultType[]
+          setNistResults(nistResults) 
+          router.push('/nist')
+        }
       }
       catch(err:any){
         toastAlert(err.message,{type:"error"})
@@ -194,14 +204,15 @@ export default function Home() {
           </div>
           }
           </div>
-          <div className="lg:grid lg:grid-cols-4   gap-8 mt-4  border-y">
+          <div className="lg:grid lg:grid-cols-12   gap-8 mt-4  border-y">
             {cdfData&&
-            <div className="col-span-2 border-r-gray-300 border-r">
+            <div className="col-span-4 border-r-gray-300 border-r">
             <ThreePlot alignPeaks={cdfData.alignPeaks} mzArr={cdfData.mzArr} times={cdfData.scanTimes} left={range?.leftIdx} right={range?.rightIdx} title={'三维图'}/>
             </div>
             }
             {massSpectrumList.length>0&&
-            <div className="col-span-2">
+            <div className="col-span-8">
+  
               <ComponentMass massSpectrumList={massSpectrumList}/>
             </div>
             }

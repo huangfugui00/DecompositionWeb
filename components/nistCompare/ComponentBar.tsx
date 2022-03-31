@@ -1,5 +1,5 @@
 import React from 'react'
-import {estType} from 'utils/type'
+import {estType,nistResultType} from 'utils/type'
 import dynamic from 'next/dynamic'
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
@@ -10,9 +10,11 @@ type ComponentBarProp={
 
 const ComponentBar:React.FC<ComponentBarProp> = (props) => {
     const {selEst} = props
+    
     return (
         <div>
             <Plot 
+            // className="border"
                 data={[
                     {
                         x:selEst.massSpectrum.x,
@@ -21,12 +23,12 @@ const ComponentBar:React.FC<ComponentBarProp> = (props) => {
                     }
                 ]}
                 layout={{
-                    height:500,
+                    height:400,
                     margin: {
                         l: 100,
                         r: 50,
                         b: 30,
-                        t: 50
+                        t:20
                     },
                    
                     xaxis:{
@@ -43,7 +45,7 @@ const ComponentBar:React.FC<ComponentBarProp> = (props) => {
                       title:'RelIntensity'
                     },
                 }}
-                style={{height:'100%',width:'100%'}}
+                style={{width:`${90}%`}}
                 config={
                     {
                         responsive:true,
@@ -52,9 +54,8 @@ const ComponentBar:React.FC<ComponentBarProp> = (props) => {
                     
                 }  
         />
-       
-    
-    </div>
+            
+        </div>
     )
 }
 
