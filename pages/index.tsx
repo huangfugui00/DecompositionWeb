@@ -1,24 +1,22 @@
 import {useState,useEffect,useContext} from 'react'
 import Head from 'next/head'
 import {useRouter} from 'next/router'
-import Header from '@/components/Header'
 import {algOptionType,componentNistResultType, rangeType} from 'utils/type'
 import cdfServices from 'services/cdfSer'
 import deompositionSer from 'services/decompositionSer'
 import nistSer from 'services/nistSer'
 import Cdf from 'utils/cdf'
 import ThreePlot from '@/components/ThreePlot'
-import TicPlotly from '@/components/TicPlotly'
 import RangeTicPlotly from '@/components/RangeTicPlotly'
 import ModalLoading from '@/components/ModalLoading'
 import {toastAlert} from '@/components/ToastAlert'
-import ComponentMass from '@/components/ComponentMass'
+import TicPlotly from '@/components/index/TicPlotly'
+import Header from '@/components/index/Header'
+import ComponentMass from '@/components/index/ComponentMass'
+import SetAndLook from '@/components/index/SetAndLook'
 import {Drawer} from '@mui/material'
-import SetAndLook from '@/components/SetAndLook'
-import NistResultTabl from '@/components/nistCompare/NistResultTab'
 import {cdfContext,estListContext,rangeContext,bNistContext,nistResultsContext} from './_app'
 import Layout from '@/components/Layout'
-import NistResultTab from '@/components/nistCompare/NistResultTab'
 
 
 export default function Home() {
@@ -179,7 +177,7 @@ export default function Home() {
   return (
     <div >
       <Head>
-        <title>InitProject</title>
+        <title>解谱</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Header  */}

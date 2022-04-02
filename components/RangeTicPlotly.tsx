@@ -12,15 +12,22 @@ type RangeTicPlotlyProp={
     title?:string,
 }
 
+type rangeTicProp={
+    x:number[],
+    y:number[],
+    name:string,
+    line?:{dash?:string,width?:number}
+}
+
 
 const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
     const {left,right,times,tics,estList,title} = props
     const rangeTic =   {
         x: times,
         y: tics,
-        name:'实际TIC'
+        name:'实际TIC',
     }
-    let data = [rangeTic]
+    let data = [rangeTic] as rangeTicProp[]
     if(estList.length>0){
         const rangeTimes=estList[0].curve.x
         let estListCurve = estList.map((est,i)=>({x:rangeTimes,y:est.curve.y,name:`成分${i+1}` })) 
@@ -32,7 +39,7 @@ const RangeTicPlotly:React.FC<RangeTicPlotlyProp> = (props) => {
                 fitTic[index] += estList[j].curve.y[index]
             }
         }
-        data.push({x:rangeTimes,y:fitTic,name:'拟合TIC'})
+        data.push({x:rangeTimes,y:fitTic,name:'拟合TIC',line:{dash:'dot'}})
     }
 
   

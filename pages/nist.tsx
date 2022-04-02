@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState,useEffect,useContext} from 'react'
+import Head from 'next/head'
 import { useRouter } from "next/router";
 import Layout from '@/components/Layout'
 import Header from '@/components/nistCompare/Header'
@@ -38,6 +39,10 @@ const nist = () => {
 
     return (
         <div>
+            <Head>
+                <title>Nist比对</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
             <Layout>
                 <main>
                     <Header/>
@@ -59,7 +64,6 @@ const nist = () => {
                                 <div>
                                     <ComponentTable estList={estList} selNthEst={selNthEst} handleClickTableRow={handleClickTableRow}/>
                                 </div>                 
-                                {/* <button className="bg-primary-color px-4 py-1 rounded text-white">NIST比对</button> */}
                             </div>
                         </div>
                     </div>
